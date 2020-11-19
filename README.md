@@ -7,4 +7,7 @@
 ```
 // ToDateTimeString converts DateTime into string with Y-m-d H:i:s format
 func ToDateTimeString(dateTime time.Time) string {}
+
+// GormOpen returns database connection
+func GormOpen(driver string) *gorm.DB {}
 ```
