@@ -18,7 +18,7 @@ func ToDateTimeString(dateTime time.Time) string {
 func GormOpen(driver string) *gorm.DB {
 	db, err := gorm.Open(driver, os.Getenv("DB_CONNECTION_URL"))
 	if err != nil {
-		slack.PostMessage("Failed to connect database.")
+		slack.PostMessage("[" + os.Getenv("APP_NAME") + "]\r\nFailed to connect database.")
 	}
 
 	return db
