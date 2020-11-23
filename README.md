@@ -13,4 +13,10 @@ func GormOpen(driver string) *gorm.DB {}
 
 // LogIfError logs the error with message
 func LogIfError(err error, message string) {}
+
+// RandomString generates random string with custom length
+func RandomString(length int) string {}
+
+// RandomInteger returns random integer between parameters
+func RandomInteger(min int, max int) int {}
 ```

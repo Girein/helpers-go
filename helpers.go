@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"log"
+	"math/rand"
 	"os"
 	"time"
 
@@ -29,4 +30,20 @@ func LogIfError(err error, message string) {
 		log.Fatalf("%s: %s", message, err)
 		slack.PostMessage("[" + os.Getenv("APP_NAME") + "]\r\n" + message)
 	}
+}
+
+// RandomString generates random string with custom length
+func RandomString(length int) string {
+	bytes := make([]byte, length)
+
+	for i := 0; i < length; i++ {
+		bytes[i] = byte(RandomInteger(65, 90))
+	}
+
+	return string(bytes)
+}
+
+// RandomInteger returns random integer between parameters
+func RandomInteger(min int, max int) int {
+	return min + rand.Intn(max-min)
 }
