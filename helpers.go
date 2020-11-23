@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"log"
 	"os"
 	"time"
 
@@ -17,9 +18,15 @@ func ToDateTimeString(dateTime time.Time) string {
 // GormOpen returns database connection
 func GormOpen(driver string) *gorm.DB {
 	db, err := gorm.Open(driver, os.Getenv("DB_CONNECTION_URL"))
-	if err != nil {
-		slack.PostMessage("[" + os.Getenv("APP_NAME") + "]\r\nFailed to connect database.")
-	}
+	LogIfError(err, "Failed to connect database")
 
 	return db
+}
+
+// LogIfError logs the error with message
+func LogIfError(err error, message string) {
+	if err != nil {
+		log.Fatalf("%s: %s", message, err)
+		slack.PostMessage("[" + os.Getenv("APP_NAME") + "]\r\n" + message)
+	}
 }

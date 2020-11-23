@@ -10,4 +10,7 @@ func ToDateTimeString(dateTime time.Time) string {}
 
 // GormOpen returns database connection
 func GormOpen(driver string) *gorm.DB {}
+
+// LogIfError logs the error with message
+func LogIfError(err error, message string) {}
 ```
