@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"encoding/json"
 	"log"
 	"math/rand"
 	"os"
@@ -46,4 +47,12 @@ func RandomString(length int) string {
 // RandomInteger returns random integer between parameters
 func RandomInteger(min int, max int) int {
 	return min + rand.Intn(max-min)
+}
+
+// JSONEncode converts data into JSON string
+func JSONEncode(data interface{}) string {
+	jsonResult, err := json.Marshal(data)
+	LogIfError(err, "JSON encode failed")
+
+	return string(jsonResult)
 }

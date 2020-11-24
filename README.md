@@ -19,4 +19,7 @@ func RandomString(length int) string {}
 
 // RandomInteger returns random integer between parameters
 func RandomInteger(min int, max int) int {}
+
+// JSONEncode converts data into JSON string
+func JSONEncode(data interface{}) string {}
 ```
