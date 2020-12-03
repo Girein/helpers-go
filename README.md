@@ -22,4 +22,7 @@ func RandomInteger(min int, max int) int {}
 
 // JSONEncode converts data into JSON string
 func JSONEncode(data interface{}) string {}
+
+// InArray checks if a value exists in an array
+func InArray(needle string, haystack []interface{}) bool {}
 ```

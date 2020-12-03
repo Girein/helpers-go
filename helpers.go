@@ -56,3 +56,14 @@ func JSONEncode(data interface{}) string {
 
 	return string(jsonResult)
 }
+
+// InArray checks if a value exists in an array
+func InArray(needle string, haystack []interface{}) bool {
+	for _, value := range haystack {
+		if needle == value {
+			return true
+		}
+	}
+
+	return false
+}
