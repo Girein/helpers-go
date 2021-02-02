@@ -1,6 +1,8 @@
 package helpers
 
 import (
+	"crypto/aes"
+	"encoding/base64"
 	"encoding/json"
 	"log"
 	"math/rand"
@@ -66,4 +68,19 @@ func InArray(needle string, haystack []interface{}) bool {
 	}
 
 	return false
+}
+
+// AESEncrypt encrypts text using cipher AES/ECB/PKCS5PADDING
+func AESEncrypt(text string, key []byte) string {
+	block, err := aes.NewCipher(key)
+	LogIfError(err, "Failed to create cipher block")
+
+	ecb := NewECBEncrypter(block)
+	content := []byte(text)
+	content = PKCS5Padding(content, block.BlockSize())
+	crypted := make([]byte, len(content))
+	ecb.CryptBlocks(crypted, content)
+	cryptedString := base64.StdEncoding.EncodeToString(crypted)
+
+	return cryptedString
 }

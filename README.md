@@ -25,4 +25,7 @@ func JSONEncode(data interface{}) string {}
 
 // InArray checks if a value exists in an array
 func InArray(needle string, haystack []interface{}) bool {}
+
+// AESEncrypt encrypts text using cipher AES/ECB/PKCS5PADDING
+func AESEncrypt(text string, key []byte) string {}
 ```
