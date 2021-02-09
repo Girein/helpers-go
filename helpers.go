@@ -30,7 +30,7 @@ func GormOpen(driver string) *gorm.DB {
 // LogIfError logs the error with message
 func LogIfError(err error, message string) {
 	if err != nil {
-		log.Fatalf("%s: %s", message, err)
+		log.Printf("%s: %s", message, err)
 		slack.PostMessage("[" + os.Getenv("APP_NAME") + "]\r\n" + message)
 	}
 }
