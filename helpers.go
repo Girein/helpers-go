@@ -84,3 +84,26 @@ func AESEncrypt(text string, key []byte) string {
 
 	return cryptedString
 }
+
+// RSAVerifySignature verifies RSA PKCS #1 v1.5 signature with SHA256 hashing
+func RSAVerifySignature(publicKey string, signature string, message string) bool {
+	parser, err := parsePublicKey([]byte(publicKey))
+	if err != nil {
+		LogIfError(err, "Failed to parse public key")
+		return false
+	}
+
+	decodedSignature, err := base64.StdEncoding.DecodeString(signature)
+	if err != nil {
+		LogIfError(err, "Failed to decode signature")
+		return false
+	}
+
+	err = parser.Unsign([]byte(message), []byte(decodedSignature))
+	if err != nil {
+		LogIfError(err, "Verify signature got error")
+		return false
+	}
+
+	return true
+}
