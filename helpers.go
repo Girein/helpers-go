@@ -20,11 +20,14 @@ func ToDateTimeString(dateTime time.Time) string {
 }
 
 // GormOpen returns database connection
-func GormOpen(driver string) *gorm.DB {
+func GormOpen(driver string) (*gorm.DB, error) {
 	db, err := gorm.Open(driver, os.Getenv("DB_CONNECTION_URL"))
-	LogIfError(err, "Failed to connect database")
+	if err != nil {
+		LogIfError(err, "Failed to connect database")
+		return nil, err
+	}
 
-	return db
+	return db, nil
 }
 
 // LogIfError logs the error with message
