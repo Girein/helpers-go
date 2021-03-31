@@ -28,9 +28,11 @@ func GormOpen(driver string, connectionUrl string) (*gorm.DB, error) {
 
 // LogIfError logs the error with message
 func LogIfError(err error, message string) {
+	log.Printf("%s: %s", message, err)
+
+	err = slack.PostMessage("[" + os.Getenv("APP_NAME") + "]\r\n" + message)
 	if err != nil {
-		log.Printf("%s: %s", message, err)
-		slack.PostMessage("[" + os.Getenv("APP_NAME") + "]\r\n" + message)
+		log.Printf("Failed to post message to Slack: %s: %s", err.Error(), err)
 	}
 }
 
