@@ -20,9 +20,8 @@ func ToDateTimeString(dateTime time.Time) string {
 }
 
 // GormOpen returns database connection
-func GormOpen(driver string) (*gorm.DB, error) {
-	db, err := gorm.Open(driver, os.Getenv("DB_CONNECTION_URL"))
-	LogIfError(err, "Failed to connect database")
+func GormOpen(driver string, connectionUrl string) (*gorm.DB, error) {
+	db, err := gorm.Open(driver, connectionUrl)
 
 	return db, err
 }
@@ -52,11 +51,13 @@ func RandomInteger(min int, max int) int {
 }
 
 // JSONEncode converts data into JSON string
-func JSONEncode(data interface{}) string {
+func JSONEncode(data interface{}) (string, error) {
 	jsonResult, err := json.Marshal(data)
-	LogIfError(err, "JSON encode failed")
+	if err != nil {
+		return "", err
+	}
 
-	return string(jsonResult)
+	return string(jsonResult), nil
 }
 
 // InArray checks if a value exists in an array
@@ -71,9 +72,11 @@ func InArray(needle string, haystack []interface{}) bool {
 }
 
 // AESEncrypt encrypts text using cipher AES/ECB/PKCS5PADDING
-func AESEncrypt(text string, key []byte) string {
+func AESEncrypt(text string, key []byte) (string, error) {
 	block, err := aes.NewCipher(key)
-	LogIfError(err, "Failed to create cipher block")
+	if err != nil {
+		return "", err
+	}
 
 	ecb := NewECBEncrypter(block)
 	content := []byte(text)
@@ -82,28 +85,25 @@ func AESEncrypt(text string, key []byte) string {
 	ecb.CryptBlocks(crypted, content)
 	cryptedString := base64.StdEncoding.EncodeToString(crypted)
 
-	return cryptedString
+	return cryptedString, nil
 }
 
 // RSAVerifySignature verifies RSA PKCS #1 v1.5 signature with SHA256 hashing
-func RSAVerifySignature(publicKey string, signature string, message string) bool {
+func RSAVerifySignature(publicKey string, signature string, message string) (bool, error) {
 	parser, err := parsePublicKey([]byte(publicKey))
 	if err != nil {
-		LogIfError(err, "Failed to parse public key")
-		return false
+		return false, err
 	}
 
 	decodedSignature, err := base64.StdEncoding.DecodeString(signature)
 	if err != nil {
-		LogIfError(err, "Failed to decode signature")
-		return false
+		return false, err
 	}
 
 	err = parser.Unsign([]byte(message), []byte(decodedSignature))
 	if err != nil {
-		LogIfError(err, "Verify signature got error")
-		return false
+		return false, err
 	}
 
-	return true
+	return true, nil
 }
