@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/Girein/slack-incoming-webhook-go"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // ToDateTimeString converts DateTime into string with Y-m-d H:i:s format
@@ -20,8 +20,8 @@ func ToDateTimeString(dateTime time.Time) string {
 }
 
 // GormOpen returns database connection
-func GormOpen(driver string, connectionUrl string) (*gorm.DB, error) {
-	db, err := gorm.Open(driver, connectionUrl)
+func GormOpen(connectionUrl string) (*gorm.DB, error) {
+	db, err := gorm.Open(mysql.Open(connectionUrl), &gorm.Config{})
 
 	return db, err
 }
