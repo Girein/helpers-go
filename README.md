@@ -40,4 +40,7 @@ func ComputeHMACSHA256(message string, secret string) (string, error) {}
 
 // LaravelEncrypt encrypts the given value using Laravel's encrypter (https://laravel.com/docs/6.x/encryption)
 func LaravelEncrypt(value string) (string, error) {}
+
+// LaravelDecrypt decrypts the given value using Laravel's encrypter (https://laravel.com/docs/6.x/encryption)
+func LaravelDecrypt(value string) (string, error) {}
 ```

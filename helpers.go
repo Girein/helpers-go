@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"log"
 	"math/rand"
 	"os"
@@ -179,4 +180,58 @@ func LaravelEncrypt(value string) (string, error) {
 	}
 
 	return base64.StdEncoding.EncodeToString(resTicket), nil
+}
+
+// LaravelDecrypt decrypts the given value using Laravel's encrypter (https://laravel.com/docs/6.x/encryption)
+func LaravelDecrypt(value string) (string, error) {
+	token, err := base64.StdEncoding.DecodeString(value)
+	if err != nil {
+		return "", err
+	}
+
+	tokenJson := make(map[string]string)
+	err = json.Unmarshal(token, &tokenJson)
+	if err != nil {
+		return "", err
+	}
+
+	tokenJsonIv, okIv := tokenJson["iv"]
+	tokenJsonValue, okValue := tokenJson["value"]
+	tokenJsonMac, okMac := tokenJson["mac"]
+	if !okIv || !okValue || !okMac {
+		return "", errors.New("value is not full")
+	}
+
+	key := os.Getenv("APP_KEY")
+
+	data := tokenJsonIv + tokenJsonValue
+	expectedMac, err := ComputeHMACSHA256(data, key)
+	if err != nil {
+		return "", err
+	}
+	check := hmac.Equal([]byte(expectedMac), []byte(tokenJsonMac))
+	if !check {
+		return "", errors.New("invalid mac")
+	}
+
+	tokenIv, err := base64.StdEncoding.DecodeString(tokenJsonIv)
+	if err != nil {
+		return "", err
+	}
+	tokenValue, err := base64.StdEncoding.DecodeString(tokenJsonValue)
+	if err != nil {
+		return "", err
+	}
+
+	dst, err := openssl.AesCBCDecrypt(tokenValue, []byte(key), tokenIv, openssl.PKCS7_PADDING)
+	if err != nil {
+		return "", err
+	}
+
+	res, err := serialize.UnMarshal(dst)
+	if err != nil {
+		return "", err
+	}
+
+	return res.(string), nil
 }
