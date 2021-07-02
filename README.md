@@ -34,4 +34,7 @@ func RandomBytes(n int) ([]byte, error) {}
 
 // OpenSSLEncrypt encrypts given data with given key, returns base64 encoded string
 func OpenSSLEncrypt(data []byte, passphrase []byte, iv []byte) (string, error) {}
+
+// ComputeHMACSHA256 hashes given message with given secret, returns hexadecimal encoded string
+func ComputeHMACSHA256(message string, secret string) (string, error) {}
 ```

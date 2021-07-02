@@ -2,7 +2,10 @@ package helpers
 
 import (
 	"crypto/aes"
+	"crypto/hmac"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"log"
 	"math/rand"
@@ -123,4 +126,16 @@ func OpenSSLEncrypt(data []byte, passphrase []byte, iv []byte) (string, error) {
 	}
 
 	return base64.StdEncoding.EncodeToString(res), nil
+}
+
+// ComputeHMACSHA256 hashes given message with given secret, returns hexadecimal encoded string
+func ComputeHMACSHA256(message string, secret string) (string, error) {
+	key := []byte(secret)
+	h := hmac.New(sha256.New, key)
+	_, err := h.Write([]byte(message))
+	if err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(h.Sum(nil)), nil
 }
