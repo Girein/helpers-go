@@ -10,20 +10,11 @@ import (
 	"time"
 
 	"github.com/Girein/slack-incoming-webhook-go"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 // ToDateTimeString converts DateTime into string with Y-m-d H:i:s format
 func ToDateTimeString(dateTime time.Time) string {
 	return dateTime.Format("2006-01-02 15:04:05")
-}
-
-// GormOpen returns database connection
-func GormOpen(connectionUrl string) (*gorm.DB, error) {
-	db, err := gorm.Open(mysql.Open(connectionUrl), &gorm.Config{})
-
-	return db, err
 }
 
 // LogIfError logs the error with message
