@@ -31,4 +31,7 @@ func RSAVerifySignature(publicKey string, signature string, message string) (boo
 
 // RandomBytes generates random byte with custom length
 func RandomBytes(n int) ([]byte, error) {}
+
+// OpenSSLEncrypt encrypts given data with given key, returns base64 encoded string
+func OpenSSLEncrypt(data []byte, passphrase []byte, iv []byte) (string, error) {}
 ```

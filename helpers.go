@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/Girein/slack-incoming-webhook-go"
+	"github.com/forgoer/openssl"
 )
 
 // ToDateTimeString converts DateTime into string with Y-m-d H:i:s format
@@ -112,4 +113,14 @@ func RandomBytes(n int) ([]byte, error) {
 	}
 
 	return b, nil
+}
+
+// OpenSSLEncrypt encrypts given data with given key, returns base64 encoded string
+func OpenSSLEncrypt(data []byte, passphrase []byte, iv []byte) (string, error) {
+	res, err := openssl.AesCBCEncrypt(data, passphrase, iv, openssl.PKCS7_PADDING)
+	if err != nil {
+		return "", err
+	}
+
+	return base64.StdEncoding.EncodeToString(res), nil
 }
