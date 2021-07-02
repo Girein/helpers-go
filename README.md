@@ -28,4 +28,7 @@ func AESEncrypt(text string, key []byte) (string, error) {}
 
 // RSAVerifySignature verifies RSA PKCS #1 v1.5 signature with SHA256 hashing
 func RSAVerifySignature(publicKey string, signature string, message string) (bool, error) {}
+
+// RandomBytes generates random byte with custom length
+func RandomBytes(n int) ([]byte, error) {}
 ```

@@ -102,3 +102,14 @@ func RSAVerifySignature(publicKey string, signature string, message string) (boo
 
 	return true, nil
 }
+
+// RandomBytes generates random byte with custom length
+func RandomBytes(n int) ([]byte, error) {
+	b := make([]byte, n)
+	_, err := rand.Read(b)
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
