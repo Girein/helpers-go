@@ -14,6 +14,7 @@ import (
 
 	"github.com/Girein/slack-incoming-webhook-go"
 	"github.com/forgoer/openssl"
+	"github.com/techoner/gophp/serialize"
 )
 
 // ToDateTimeString converts DateTime into string with Y-m-d H:i:s format
@@ -138,4 +139,44 @@ func ComputeHMACSHA256(message string, secret string) (string, error) {
 	}
 
 	return hex.EncodeToString(h.Sum(nil)), nil
+}
+
+// LaravelEncrypt encrypts the given value using Laravel's encrypter (https://laravel.com/docs/6.x/encryption)
+func LaravelEncrypt(value string) (string, error) {
+	iv, err := RandomBytes(16)
+	if err != nil {
+		return "", err
+	}
+
+	message, err := serialize.Marshal(value)
+	if err != nil {
+		return "", err
+	}
+
+	key := os.Getenv("APP_KEY")
+
+	resVal, err := OpenSSLEncrypt(message, []byte(key), iv)
+	if err != nil {
+		return "", err
+	}
+
+	resIv := base64.StdEncoding.EncodeToString(iv)
+
+	data := resIv + resVal
+	mac, err := ComputeHMACSHA256(data, key)
+	if err != nil {
+		return "", err
+	}
+
+	ticket := make(map[string]interface{})
+	ticket["iv"] = resIv
+	ticket["mac"] = mac
+	ticket["value"] = resVal
+
+	resTicket, err := json.Marshal(ticket)
+	if err != nil {
+		return "", err
+	}
+
+	return base64.StdEncoding.EncodeToString(resTicket), nil
 }

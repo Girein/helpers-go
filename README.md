@@ -37,4 +37,7 @@ func OpenSSLEncrypt(data []byte, passphrase []byte, iv []byte) (string, error) {
 
 // ComputeHMACSHA256 hashes given message with given secret, returns hexadecimal encoded string
 func ComputeHMACSHA256(message string, secret string) (string, error) {}
+
+// LaravelEncrypt encrypts the given value using Laravel's encrypter (https://laravel.com/docs/6.x/encryption)
+func LaravelEncrypt(value string) (string, error) {}
 ```
