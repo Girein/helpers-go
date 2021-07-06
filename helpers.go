@@ -12,6 +12,7 @@ import (
 	"math/rand"
 	"os"
 	"time"
+	"unsafe"
 
 	"github.com/Girein/slack-incoming-webhook-go"
 	"github.com/forgoer/openssl"
@@ -36,14 +37,34 @@ func LogIfError(err error, message string) {
 }
 
 // RandomString generates random string with custom length
-func RandomString(length int) string {
-	bytes := make([]byte, length)
+func RandomString(n int) string {
+	const (
+		letterBytes   = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+		letterIdxBits = 6
+		letterIdxMask = 1<<letterIdxBits - 1
+		letterIdxMax  = 63 / letterIdxBits
+	)
 
-	for i := 0; i < length; i++ {
-		bytes[i] = byte(RandomInteger(65, 90))
+	var (
+		src = rand.NewSource(time.Now().UnixNano())
+		b   = make([]byte, n)
+	)
+
+	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
+		if remain == 0 {
+			cache, remain = src.Int63(), letterIdxMax
+		}
+
+		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
+			b[i] = letterBytes[idx]
+			i--
+		}
+
+		cache >>= letterIdxBits
+		remain--
 	}
 
-	return string(bytes)
+	return *(*string)(unsafe.Pointer(&b))
 }
 
 // RandomInteger returns random integer between parameters
